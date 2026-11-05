@@ -38,7 +38,7 @@ You need the Xcode Command Line Tools (`xcode-select --install`).
 
 ```bash
 git clone https://github.com/arslanrakh/lidawake.git
-cd LidAwake
+cd lidawake
 ./build.sh
 mv LidAwake.app /Applications/
 open /Applications/LidAwake.app
