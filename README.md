@@ -19,7 +19,7 @@ If you came here looking for **Amphetamine**, **Caffeine**, **KeepingYouAwake**,
 
 ## Download
 
-**[⬇ Download LidAwake.zip](https://github.com/arslanrakh/LidAwake/releases/latest/download/LidAwake.zip)** (latest release, universal: Apple Silicon and Intel, macOS 13+)
+**[⬇ Download LidAwake.zip](https://github.com/arslanrakh/lidawake/releases/latest/download/LidAwake.zip)** (latest release, universal: Apple Silicon and Intel, macOS 13+)
 
 1. Unzip it and move `LidAwake.app` to **Applications**.
 2. Open it. A moon icon appears in the menu bar.
@@ -30,14 +30,14 @@ LidAwake is ad-hoc signed, not notarized by Apple, so the first launch is blocke
 xattr -dr com.apple.quarantine /Applications/LidAwake.app
 ```
 
-All releases are on the [Releases page](https://github.com/arslanrakh/LidAwake/releases).
+All releases are on the [Releases page](https://github.com/arslanrakh/lidawake/releases).
 
 ## Build from source
 
 You need the Xcode Command Line Tools (`xcode-select --install`).
 
 ```bash
-git clone https://github.com/arslanrakh/LidAwake.git
+git clone https://github.com/arslanrakh/lidawake.git
 cd LidAwake
 ./build.sh
 mv LidAwake.app /Applications/
