@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for coding agents working on LidAwake.
+Guidance for coding agents working on LidAwake. `CLAUDE.md` is one line, `@AGENTS.md`, so Claude Code reads this same file; put instructions here, not there.
 
 ## What this is
 
@@ -10,8 +10,11 @@ A macOS menu bar app (AppKit, no SwiftUI, no Xcode project) that keeps a Mac awa
 
 ```
 Sources/main.swift   all app code: helpers, AppDelegate, menu, entry point
-build.sh             compiles a universal binary, writes Info.plist, ad-hoc signs
-README.md            user-facing docs
+build.sh             compiles a universal binary, writes Info.plist (version lives here), ad-hoc signs
+README.md            user-facing docs; the repository is public, so it is also the landing page
+AGENTS.md            this file
+CLAUDE.md            `@AGENTS.md`, nothing else
+LICENSE              MIT
 ```
 
 `LidAwake.app/` and `.build/` are build output and are git-ignored.
@@ -23,7 +26,7 @@ README.md            user-facing docs
 open LidAwake.app
 ```
 
-Requirements: Xcode Command Line Tools, Swift 5 language mode, deployment target macOS 13. The build makes `arm64` and `x86_64` slices and merges them with `lipo`. A linker warning about `libswiftCompatibilityPacks.a` missing `x86_64` is expected and harmless.
+Requirements: Xcode Command Line Tools, Swift 5 language mode, deployment target macOS 13. The build makes `arm64` and `x86_64` slices with `swiftc -O` and merges them with `lipo`. A build takes about a minute. The linker warns that `libswiftCompatibilityPacks.a` is missing `x86_64`: expected and harmless. There is no Swift package and no Xcode project, so `swift build` does not apply.
 
 To restart after a rebuild, quit from the menu (not `kill`, which skips `applicationWillTerminate`), then `open LidAwake.app` again.
 
@@ -32,7 +35,7 @@ To restart after a rebuild, quit from the menu (not `kill`, which skips `applica
 - **State** is read from `pmset -g` (`SleepDisabled`), never cached as the source of truth. A 10 s timer syncs it, so changes made in Terminal show up in the menu.
 - **Switching** runs `sudo -n /usr/bin/pmset -a disablesleep 0|1`. If that fails, the app installs a sudoers rule through `NSAppleScript` (`do shell script … with administrator privileges`) and retries.
 - **Lid handling**: a 1.5 s timer reads `AppleClamshellState` from `IOPMrootDomain`. When the lid is closed, the built-in display is awake and no external display is awake, it runs `pmset displaysleepnow` (at most every 10 s).
-- **Timers and battery guard** are checked in the 10 s tick.
+- **Timers and battery guard** are checked in the 10 s tick. The battery guard switches off only on battery power below `batteryGuardLevel` (15%). A timed choice sets `endDate` to now plus the duration, so "Extend For" restarts the countdown instead of adding to it. `endDate` lives in memory only.
 - **Settings** live in `UserDefaults` (`batteryGuardEnabled`, `lidDisplayOffEnabled`, both default `true`).
 - **Launch at Login** uses `SMAppService.mainApp`.
 
@@ -58,7 +61,7 @@ There are no automated tests. They'd need root and real hardware. Before you fin
 5. A timed mode turns itself off when the time runs out.
 6. Quit from the menu while on: `SleepDisabled` returns to `0`.
 
-When you change behavior, update `README.md` too.
+When you change behavior, update `README.md` too. The Usage table and the Caveats list follow the code item by item.
 
 ## Releasing
 
@@ -70,4 +73,4 @@ When you change behavior, update `README.md` too.
    ```
 3. `gh release create vX.Y.Z LidAwake.zip --title "LidAwake X.Y.Z" --notes "…"`
 
-The asset must be named `LidAwake.zip`: the README links to `releases/latest/download/LidAwake.zip`.
+The asset must be named `LidAwake.zip`: the README links to `releases/latest/download/LidAwake.zip`. Those links name the GitHub owner. If the repository moves, change the owner in them to match `git remote get-url origin`.

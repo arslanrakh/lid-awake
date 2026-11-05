@@ -19,7 +19,7 @@ If you came here looking for **Amphetamine**, **Caffeine**, **KeepingYouAwake**,
 
 ## Download
 
-**[⬇ Download LidAwake.zip](https://github.com/arslanr-com/LidAwake/releases/latest/download/LidAwake.zip)** (latest release, universal: Apple Silicon and Intel, macOS 13+)
+**[⬇ Download LidAwake.zip](https://github.com/arslanrakh/LidAwake/releases/latest/download/LidAwake.zip)** (latest release, universal: Apple Silicon and Intel, macOS 13+)
 
 1. Unzip it and move `LidAwake.app` to **Applications**.
 2. Open it. A moon icon appears in the menu bar.
@@ -30,19 +30,21 @@ LidAwake is ad-hoc signed, not notarized by Apple, so the first launch is blocke
 xattr -dr com.apple.quarantine /Applications/LidAwake.app
 ```
 
-All releases are on the [Releases page](https://github.com/arslanr-com/LidAwake/releases).
+All releases are on the [Releases page](https://github.com/arslanrakh/LidAwake/releases).
 
 ## Build from source
 
 You need the Xcode Command Line Tools (`xcode-select --install`).
 
 ```bash
-git clone https://github.com/arslanr-com/LidAwake.git
+git clone https://github.com/arslanrakh/LidAwake.git
 cd LidAwake
 ./build.sh
 mv LidAwake.app /Applications/
 open /Applications/LidAwake.app
 ```
+
+Expect about a minute: `build.sh` compiles once for Apple Silicon and once for Intel. The linker warns that `libswiftCompatibilityPacks.a` is missing `x86_64`. That warning is harmless.
 
 ## Usage
 
@@ -51,11 +53,11 @@ Click the menu bar icon:
 | Item | What it does |
 | --- | --- |
 | **Turn On / Turn Off** (⌘T) | Keep the Mac awake indefinitely, or return to normal sleep |
-| **Turn On For…** | Stay awake for a set time, then sleep normally |
-| **Turn Off Display When Lid Closes** | Blank the built-in screen while the lid is shut (on by default) |
-| **Turn Off Below 15% Battery** | Battery guard (on by default) |
-| **Launch at Login** | Start LidAwake when you log in |
-| **Remove Passwordless Access** | Delete the sudoers rule described below |
+| **Turn On For…** | Stay awake for 30 minutes or 1, 2, 4 or 8 hours, then sleep normally. The item is called **Extend For…** when LidAwake is already on, and restarts the countdown from now. **Indefinitely** drops the timer |
+| **Turn Off Display When Lid Closes** | Blank the built-in screen while the lid is shut, unless an external display is in use (on by default) |
+| **Turn Off Below 15% Battery** | Battery guard: switch off when running on battery below 15% (on by default) |
+| **Launch at Login** | Start LidAwake when you log in. macOS may ask you to approve it in System Settings |
+| **Remove Passwordless Access** | Switch off, then delete the sudoers rule described below. Shown only while the rule exists |
 | **Quit** | Quit the app; if it was on, sleep is switched back on first |
 
 The icon is a moon when sleep is normal and a filled coffee cup when the Mac is kept awake.
@@ -88,6 +90,8 @@ With `disablesleep` on, macOS also leaves the built-in display on when the lid c
 - `disablesleep` is a system-wide setting and **persists across reboots** until it's turned off. If you delete LidAwake while it's on, run `sudo pmset -a disablesleep 0`.
 - A closed MacBook that is working can get warm. Don't run heavy workloads with the lid shut inside a bag or on a soft surface.
 - Force-quitting LidAwake (for example `kill`) leaves the mode as it was. Use **Quit** from the menu to switch sleep back on.
+- LidAwake reads the setting from `pmset` and keeps no copy of its own. It notices a change made in Terminal after 10 seconds at most. **Quit** switches it off whoever turned it on.
+- Timers and battery guard live in the app. If LidAwake is not running, nothing turns `disablesleep` off for you.
 
 ## LidAwake vs. other keep-awake apps
 
@@ -102,9 +106,10 @@ Amphetamine has its own closed-display mode and many more triggers (apps, Wi-Fi,
 
 ## Uninstall
 
-1. Turn LidAwake off and quit it from the menu.
-2. Click **Remove Passwordless Access** first, or run `sudo rm /etc/sudoers.d/lidawake`.
-3. Delete `/Applications/LidAwake.app`.
+1. Uncheck **Launch at Login** if you turned it on.
+2. Click **Remove Passwordless Access**. It switches LidAwake off and deletes the sudoers rule. (Or run `sudo rm /etc/sudoers.d/lidawake` yourself.)
+3. Quit LidAwake from the menu.
+4. Delete `/Applications/LidAwake.app`.
 
 ## License
 
